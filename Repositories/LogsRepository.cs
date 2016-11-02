@@ -1,35 +1,49 @@
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
+using MySql.Data.MySqlClient;
+using Dapper;
 
 namespace log4sky
 {
     public class LogsRepository : ILogsRepository
     {
-        private ConcurrentDictionary<string, Log> _logs;
-
         public LogsRepository()
         {
-            _logs = new ConcurrentDictionary<string, Log>();
-            _logs.TryAdd(
-                "1", 
-                new Log()
-                {
-                    Id = 1,
-                    DateWritten = DateTime.UtcNow,
-                    Territory = "testTerritory",
-                    Proposition = "testProposition",
-                    PropositionVersion = "testVersion",
-                    Platform = "testPlatform",
-                    PlatformOs = "testPlatformOs",
-                    PlatformOsVersion = "testPlatformOsVersion",
-                    Runtime = Guid.NewGuid().ToString(),
-                });
         }
 
         public IEnumerable<Log> GetAll()
         {
-            return _logs.Values;
+            using (IDbConnection connection = new MySqlConnection(General.ConnectionString))
+            {
+                connection.Open();
+                return connection.Query<Log>(@"SELECT 
+                    id, 
+                    date_written, 
+                    territory,
+                    proposition,
+                    proposition_version,
+                    platform,
+                    platform_os,
+                    platform_os_version,
+                    runtime,
+                    runtime_version,
+                    level,
+                    error_type,
+                    error_code,
+                    error_url,
+                    error_content,
+                    error_line_number,
+                    error_additional_info,
+                    user_tracking_id,
+                    is_online,
+                    is_out_of_locale,
+                    is_authenticated,
+                    total_memory,
+                    total_disk_space,
+                    memory_usage,
+                    cpu_usage
+                    FROM log4sky.log").AsList();
+            }
         }
     }
 }

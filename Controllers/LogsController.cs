@@ -23,7 +23,7 @@ namespace log4sky
         [HttpGet]
         public IEnumerable<Log> Get()
         {
-            return this.LogsRepository.GetAll();
+            return LogsRepository.GetAll();
         }
 
         // GET api/logs/5

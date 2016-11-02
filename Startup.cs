@@ -27,6 +27,8 @@ namespace log4sky
             services.AddMvc();
 
             services.AddSingleton<ILogsRepository>(new LogsRepository());
+
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
