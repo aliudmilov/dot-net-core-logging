@@ -3,7 +3,7 @@ using System;
 namespace log4sky
 {
     public class Log
-    { 
+    {
         public int Id { get; set; }
         public DateTime DateWritten { get; set; }
         public string Territory { get; set; }
@@ -28,5 +28,6 @@ namespace log4sky
         public int TotalMemory { get; set; }
         public int TotalDiskSpace { get; set; }
         public int MemoryUsage { get; set; }
+        public int CpuUsage { get; set; }
     }
 }

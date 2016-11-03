@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,12 +11,12 @@ namespace log4sky
         {
             LogsRepository = logsRepository;
         }
-        
-        
+
+
         public ILogsRepository LogsRepository
         {
             get;
-            set;
+            private set;
         }
 
 
@@ -27,28 +28,28 @@ namespace log4sky
         }
 
         // GET api/logs/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetLog")]
         public Log Get(int id)
         {
-            return null;
+            return LogsRepository.Get(id);
         }
 
         // POST api/logs
         [HttpPost]
-        public void Post([FromBody]Log value)
+        public IActionResult Post([FromBody]Log value)
         {
+            if (value == null) return BadRequest();
+
+            value.DateWritten = DateTime.UtcNow;
+            LogsRepository.Add(value);
+            return CreatedAtRoute("GetLog", new { @id = value.Id }, value);
         }
 
-        // PUT api/logs/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]Log value)
+        // DELETE api/logs
+        [HttpDelete]
+        public void DeleteAll()
         {
-        }
-
-        // DELETE api/logs/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            LogsRepository.DeleteAll();
         }
     }
 }
