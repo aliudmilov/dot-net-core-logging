@@ -29,9 +29,13 @@ namespace log4sky
 
         // GET api/logs/5
         [HttpGet("{id}", Name = "GetLog")]
-        public Log Get(int id)
+        public IActionResult Get(int id)
         {
-            return LogsRepository.Get(id);
+            Log item = LogsRepository.Get(id);
+
+            if (item == null) return NotFound();
+
+            return new ObjectResult(item);
         }
 
         // POST api/logs
@@ -42,14 +46,17 @@ namespace log4sky
 
             value.DateWritten = DateTime.UtcNow;
             LogsRepository.Add(value);
+
             return CreatedAtRoute("GetLog", new { @id = value.Id }, value);
         }
 
         // DELETE api/logs
         [HttpDelete]
-        public void DeleteAll()
+        public IActionResult DeleteAll()
         {
             LogsRepository.DeleteAll();
+
+            return new NoContentResult();
         }
     }
 }
