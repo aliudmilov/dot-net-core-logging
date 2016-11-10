@@ -35,7 +35,7 @@ namespace log4sky
 
             if (item == null) return NotFound();
 
-            return new ObjectResult(item);
+            return new OkObjectResult(item);
         }
 
         // POST api/logs
@@ -44,8 +44,15 @@ namespace log4sky
         {
             if (value == null) return BadRequest();
 
-            value.DateWritten = DateTime.UtcNow;
-            LogsRepository.Add(value);
+            try
+            {
+                value.DateWritten = DateTime.UtcNow;
+                LogsRepository.Add(value);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
 
             return CreatedAtRoute("GetLog", new { @id = value.Id }, value);
         }
