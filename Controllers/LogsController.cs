@@ -42,7 +42,7 @@ namespace log4sky
         [HttpPost]
         public IActionResult Post([FromBody]Log value)
         {
-            if (value == null) return BadRequest();
+            if (value == null || !ModelState.IsValid) return BadRequest();
 
             try
             {
